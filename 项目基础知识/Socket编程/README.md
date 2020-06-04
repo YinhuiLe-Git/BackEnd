@@ -87,8 +87,8 @@ sendto、recvfrom保存对端的地址
 
 * backlog的作用
     * backlog是队列的长度，内核为任何一个给定的监听套接口维护两个队列：
-        * 未完成连接队列（incomplete connection queue），每个这样的 SYN 分节对应其中一项：已由某个客户发出并到达服务器，而服务器正在等待完成相应的 TCP 三次握手过程。这些套接口处于 SYN_RCVD 状态。
-        * 已完成连接队列（completed connection queue），每个已完成 TCP 三次握手过程的客户对应其中一项。这些套接口处于 ESTABLISHED 状态
+        * 半连接队列（incomplete connection queue），每个这样的 SYN 分节对应其中一项：已由某个客户发出并到达服务器，而服务器正在等待完成相应的 TCP 三次握手过程。这些套接口处于 SYN_RCVD 状态。
+        * 全连接队列（completed connection queue），每个已完成 TCP 三次握手过程的客户对应其中一项。这些套接口处于 ESTABLISHED 状态
     * 当有一个客户端主动连接（connect()），Linux 内核就自动完成TCP 三次握手，该项就从未完成连接队列移到已完成连接队列的队尾，将建立好的链接自动存储到队列中，如此重复
     * backlog 参数历史上被定义为上面两个队列的大小之和，大多数实现默认值为 5
     
