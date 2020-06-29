@@ -142,7 +142,18 @@ UDP的connect和TCP的connect完全不同，UDP不会引起三次握手
 首先通过TCP的四次挥手过程分析确定两个状态的出现背景。TIMEWAIT是大量tcp短连接导致的，确保对方收到最后发出的ACK，一般为2MSL；CLOSEWAIT是tcp连接不关闭导致的，出现在close()函数之前。
 ### TIMEWAIT
 * 可以通过设置SOCKET选项SO_REUSEADDR来重用处于TIMEWAIT的sock地址，对应于内核中的tcp_tw_reuse，这个参数不是“消除” TIME_WAIT的，而是说当资源不够时，可以重用TIME_WAIT的连接
-* 修改ipv4.ip_local_port_range，增大可用端口范围，来承受更多TIME
+* 修改ipv4.ip_local_port_range，增大可用端口范围，来承受更多TIME，
+第一步，修改/etc/sysctl.conf文件，在文件中添加如下行：
+
+　　net.ipv4.ip_local_port_range = 1024 65000
+
+　　这表明将系统对本地端口范围限制设置为1024~65000之间。请注意，本地端口范围的最小值必须大于或等于1024;而端口范围的最大值则应小于或等于65535.修改完后保存此文件。
+
+　　第二步，执行sysctl命令：
+
+　　[speng@as4 ~]$ sysctl -p
+
+　　如果系统没有错误提示，就表明新的本地端口范围设置成功。如果按上述端口范围进行设置，则理论上单独一个进程最多可以同时建立60000多个TCP客户端连接。
 * 设置SOCK选项SO_LINGER选项，这样会直接消除TIMEWAIT
 
 ### CLOSEWAIT
